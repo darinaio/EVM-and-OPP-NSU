@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <time.h>
-#define N 4900000000
+#define N 5900000000
 
 double exp_maclaurin(double x) {
     double sum = 0.0;
@@ -14,7 +14,10 @@ double exp_maclaurin(double x) {
 
 int main() {
     double x;
-    scanf("%lf", &x);
+    if(scanf("%lf", &x) !=1){
+        printf("ERROR");
+        return 0;
+    }
 
     clock_t start_time = clock();
     double result = exp_maclaurin(x);
