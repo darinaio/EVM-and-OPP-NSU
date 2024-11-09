@@ -1,0 +1,101 @@
+exp_maclaurin:
+        sub     esp, 12
+        pxor    xmm1, xmm1
+        movsd   xmm4, QWORD PTR .LC1
+        movsd   xmm5, QWORD PTR .LC2
+        movsd   xmm6, QWORD PTR [esp+16]
+        movapd  xmm2, xmm1
+        movapd  xmm0, xmm4
+.L2:
+        addsd   xmm2, xmm0
+        mulsd   xmm0, xmm6
+        movapd  xmm3, xmm1
+        comisd  xmm5, xmm3
+        addsd   xmm1, xmm4
+        divsd   xmm0, xmm1
+        ja      .L2
+        movsd   QWORD PTR [esp], xmm2
+        fld     QWORD PTR [esp]
+        add     esp, 12
+        ret
+.LC4:
+        .string "%lf"
+.LC5:
+        .string "ERROR"
+.LC6:
+        .string "%.10lf\n"
+.LC8:
+        .string "%.10lf"
+main:
+        lea     ecx, [esp+4]
+        and     esp, -16
+        push    DWORD PTR [ecx-4]
+        push    ebp
+        mov     ebp, esp
+        push    esi
+        push    ebx
+        lea     eax, [ebp-32]
+        push    ecx
+        sub     esp, 52
+        push    eax
+        push    OFFSET FLAT:.LC4
+        call    __isoc99_scanf
+        add     esp, 16
+        cmp     eax, 1
+        je      .L7
+        sub     esp, 12
+        push    OFFSET FLAT:.LC5
+        call    printf
+        add     esp, 16
+.L8:
+        lea     esp, [ebp-12]
+        xor     eax, eax
+        pop     ecx
+        pop     ebx
+        pop     esi
+        pop     ebp
+        lea     esp, [ecx-4]
+        ret
+.L7:
+        call    clock
+        pxor    xmm1, xmm1
+        movsd   xmm6, QWORD PTR [ebp-32]
+        movsd   xmm4, QWORD PTR .LC1
+        movsd   xmm5, QWORD PTR .LC2
+        mov     esi, eax
+        movapd  xmm2, xmm1
+        movapd  xmm0, xmm4
+.L9:
+        addsd   xmm2, xmm0
+        mulsd   xmm0, xmm6
+        movapd  xmm3, xmm1
+        comisd  xmm5, xmm3
+        addsd   xmm1, xmm4
+        divsd   xmm0, xmm1
+        ja      .L9
+        movsd   QWORD PTR [ebp-48], xmm2
+        call    clock
+        movsd   xmm2, QWORD PTR [ebp-48]
+        sub     esp, 12
+        mov     ebx, eax
+        movsd   QWORD PTR [esp], xmm2
+        sub     ebx, esi
+        push    OFFSET FLAT:.LC6
+        call    printf
+        pxor    xmm0, xmm0
+        mov     DWORD PTR [esp], OFFSET FLAT:.LC8
+        cvtsi2sd        xmm0, ebx
+        mulsd   xmm0, QWORD PTR .LC7
+        movsd   QWORD PTR [esp+4], xmm0
+        call    printf
+        add     esp, 16
+        jmp     .L8
+.LC1:
+        .long   0
+        .long   1072693248
+.LC2:
+        .long   -538968064
+        .long   1106054824
+.LC7:
+        .long   -1598689907
+        .long   1051772663

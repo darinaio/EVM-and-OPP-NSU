@@ -1,0 +1,98 @@
+exp_maclaurin:
+        push    rbp
+        mov     rbp, rsp
+        movsd   QWORD PTR [rbp-40], xmm0
+        pxor    xmm0, xmm0
+        movsd   QWORD PTR [rbp-8], xmm0
+        movsd   xmm0, QWORD PTR .LC1[rip]
+        movsd   QWORD PTR [rbp-16], xmm0
+        pxor    xmm0, xmm0
+        movsd   QWORD PTR [rbp-24], xmm0
+        jmp     .L2
+.L3:
+        movsd   xmm0, QWORD PTR [rbp-8]
+        addsd   xmm0, QWORD PTR [rbp-16]
+        movsd   QWORD PTR [rbp-8], xmm0
+        movsd   xmm0, QWORD PTR [rbp-16]
+        mulsd   xmm0, QWORD PTR [rbp-40]
+        movsd   xmm2, QWORD PTR [rbp-24]
+        movsd   xmm1, QWORD PTR .LC1[rip]
+        addsd   xmm1, xmm2
+        divsd   xmm0, xmm1
+        movsd   QWORD PTR [rbp-16], xmm0
+        movsd   xmm1, QWORD PTR [rbp-24]
+        movsd   xmm0, QWORD PTR .LC1[rip]
+        addsd   xmm0, xmm1
+        movsd   QWORD PTR [rbp-24], xmm0
+.L2:
+        movsd   xmm0, QWORD PTR .LC2[rip]
+        comisd  xmm0, QWORD PTR [rbp-24]
+        ja      .L3
+        movsd   xmm0, QWORD PTR [rbp-8]
+        movq    rax, xmm0
+        movq    xmm0, rax
+        pop     rbp
+        ret
+.LC3:
+        .string "%lf"
+.LC4:
+        .string "ERROR"
+.LC5:
+        .string "%.10lf\n"
+.LC7:
+        .string "%.10lf"
+main:
+        push    rbp
+        mov     rbp, rsp
+        sub     rsp, 32
+        lea     rax, [rbp-32]
+        mov     rsi, rax
+        mov     edi, OFFSET FLAT:.LC3
+        mov     eax, 0
+        call    __isoc99_scanf
+        cmp     eax, 1
+        je      .L6
+        mov     edi, OFFSET FLAT:.LC4
+        mov     eax, 0
+        call    printf
+        mov     eax, 0
+        jmp     .L8
+.L6:
+        call    clock
+        mov     QWORD PTR [rbp-8], rax
+        mov     rax, QWORD PTR [rbp-32]
+        movq    xmm0, rax
+        call    exp_maclaurin
+        movq    rax, xmm0
+        mov     QWORD PTR [rbp-16], rax
+        call    clock
+        mov     QWORD PTR [rbp-24], rax
+        mov     rax, QWORD PTR [rbp-16]
+        movq    xmm0, rax
+        mov     edi, OFFSET FLAT:.LC5
+        mov     eax, 1
+        call    printf
+        mov     rax, QWORD PTR [rbp-24]
+        sub     rax, QWORD PTR [rbp-8]
+        pxor    xmm0, xmm0
+        cvtsi2sd        xmm0, rax
+        movsd   xmm1, QWORD PTR .LC6[rip]
+        divsd   xmm0, xmm1
+        movq    rax, xmm0
+        movq    xmm0, rax
+        mov     edi, OFFSET FLAT:.LC7
+        mov     eax, 1
+        call    printf
+        mov     eax, 0
+.L8:
+        leave
+        ret
+.LC1:
+        .long   0
+        .long   1072693248
+.LC2:
+        .long   -536870912
+        .long   1106054824
+.LC6:
+        .long   0
+        .long   1093567616
